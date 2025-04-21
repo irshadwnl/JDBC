@@ -1,0 +1,261 @@
+******************************** UC1 *****************************
+UC1:-Ability to create a payroll
+    service database:-
+
+mysql> CREATE database employee_payroll;
+Query OK, 1 row affected (0.02 sec)
+
+mysql> SHOW databases;
++--------------------+
+| Database           |
++--------------------+
+| employee_payroll   |
+| information_schema |
+| mysql              |
+| org                |
+| performance_schema |
+| students           |
+| sys                |
++--------------------+
+7 rows in set (0.00 sec)
+
+mysql> USE employee_payroll;
+Database changed
+
+
+******************************** UC2 *****************************
+UC2:-Ability to create a employee payroll table
+     in the payroll service database to
+     manage employee payrolls:-
+
+mysql> CREATE TABLE employee_payroll(
+    -> id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    -> name CHAR(25),
+    -> salary NUMERIC,
+    -> start_date DATE
+    -> );
+Query OK, 0 rows affected (0.05 sec)
+
+******************************** UC3 *****************************
+
+UC3:- Ability to create employee
+      payroll data in the payroll
+      service database as part of crud operation:---
+
+mysql> INSERT INTO employee_payroll 
+    -> (name,salary ,start_date) 
+    -> VALUES
+    -> ('Sam',50000,'2025-02-05'),
+    -> ('Irshad',60000,'2024-01-20'),
+    -> ('Saif',80000,'2024-10-03'),
+    -> ('Danish',90000,'2023-04-18'),
+    -> ('Rohan',65000,'2024-05-01'),
+    -> ('David',99000,'2022-03-05');
+Query OK, 6 rows affected (0.02 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+******************************** UC4 *****************************
+
+UC4:- Ability to retrieve all the
+      employee payroll data that is
+      added to payroll service
+      database:--
+
+mysql> SELECT * FROM employee_payroll;
++----+--------+--------+------------+
+| id | name   | salary | start_date |
++----+--------+--------+------------+
+|  1 | Sam    |  50000 | 2025-02-05 |
+|  2 | Irshad |  60000 | 2024-01-20 |
+|  3 | Saif   |  80000 | 2024-10-03 |
+|  4 | Danish |  90000 | 2023-04-18 |
+|  5 | Rohan  |  65000 | 2024-05-01 |
+|  6 | David  |  99000 | 2022-03-05 |
++----+--------+--------+------------+
+6 rows in set (0.00 sec)
+
+******************************** UC5 *****************************
+
+UC5:- Ability to retrieve salary data for a particular
+      employee as well as all employees who have
+      joined in a particular data range from the
+      payroll service database:-
+
+mysql> SELECT salary FROM employee_payroll where name='Irshad';
++--------+
+| salary |
++--------+
+|  60000 |
++--------+
+1 row in set (0.00 sec)
+
+
+mysql> SELECT * FROM employee_payroll WHERE start_date BETWEEN CAST('2024-01-01' AS DATE) AND DATE(NOW());
++----+--------+--------+------------+
+| id | name   | salary | start_date |
++----+--------+--------+------------+
+|  1 | Sam    |  50000 | 2025-02-05 |
+|  2 | Irshad |  60000 | 2024-01-20 |
+|  3 | Saif   |  80000 | 2024-10-03 |
+|  5 | Rohan  |  65000 | 2024-05-01 |
++----+--------+--------+------------+
+4 rows in set (0.01 sec)
+
+******************************** UC6 *****************************
+
+UC6:-Ability to add Gender to Employee
+     Payroll Table and Update the Rows to
+     reflect the correct Employee Gender:-
+
+     
+mysql> ALTER TABLE employee_payroll ADD gender char(1);
+Query OK, 0 rows affected (0.06 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> UPDATE employee_payroll set gender='M' WHERE name ='Irshad' or name='Rohan';
+Query OK, 2 rows affected (0.02 sec)
+Rows matched: 2  Changed: 2  Warnings: 0
+
+mysql> SELECT * FROM employee_payroll;
++----+--------+--------+------------+--------+
+| id | name   | salary | start_date | gender |
++----+--------+--------+------------+--------+
+|  1 | Sam    |  50000 | 2025-02-05 | NULL   |
+|  2 | Irshad |  60000 | 2024-01-20 | M      |
+|  3 | Saif   |  80000 | 2024-10-03 | NULL   |
+|  4 | Danish |  90000 | 2023-04-18 | NULL   |
+|  5 | Rohan  |  65000 | 2024-05-01 | M      |
+|  6 | David  |  99000 | 2022-03-05 | NULL   |
++----+--------+--------+------------+--------+
+6 rows in set (0.00 sec)
+
+******************************** UC7 *****************************
+UC7:- Ability to find sum, average, min, max
+      and number of male and female
+      employees:-
+
+mysql> SELECT SUM(salary) FROM employee_payroll
+    -> WHERE gender = 'F' GROUP BY gender;
++-------------+
+| SUM(salary) |
++-------------+
+|       45000 |
++-------------+
+1 row in set (0.02 sec)
+
+mysql>  SELECT AVG(salary) FROM employee_payroll WHERE gender='M' GROUP BY gender;
++-------------+
+| AVG(salary) |
++-------------+
+|  62500.0000 |
++-------------+
+1 row in set (0.00 sec)
+
+
+
+mysql> SELECT MIN(salary) FROM employee_payroll WHERE gender='M' or gender='NULL' GROUP BY gender;
++-------------+
+| MIN(salary) |
++-------------+
+|       60000 |
++-------------+
+1 row in set (0.02 sec)
+
+
+
+mysql>  SELECT MAX(salary) FROM employee_payroll WHERE gender='M' GROUP BY gender;
++-------------+
+| MAX(salary) |
++-------------+
+|       65000 |
++-------------+
+1 row in set (0.00 sec)
+
+
+******************************** UC8 *****************************
+UC8:-Ability to extend
+     employee_payroll data to
+     store employee information
+     like employee phone, address
+     and department:-
+
+
+
+mysql> ALTER TABLE employee_pyaroll ADD phone_number NUMERIC , ADD address VARCHAR(255) DEFAULT 'NOT PROVIDED',ADD department VARCHAR(255) NOT NULL;
+ERROR 1146 (42S02): Table 'employee_payroll.employee_pyaroll' doesn't exist
+mysql> ALTER TABLE employee_payroll ADD phone_number NUMERIC , ADD address VARCHAR(255) DEFAULT 'NOT PROVIDED',ADD department VARCHAR(255) NOT NULL;
+Query OK, 0 rows affected (0.05 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+
+mysql> SELECT * FROM employee_payroll;
++----+--------+--------+------------+--------+--------------+--------------+------------+
+| id | name   | salary | start_date | gender | phone_number | address      | department |
++----+--------+--------+------------+--------+--------------+--------------+------------+
+|  1 | Sam    |  50000 | 2025-02-05 | NULL   |         NULL | NOT PROVIDED |            |
+|  2 | Irshad |  60000 | 2024-01-20 | M      |         NULL | NOT PROVIDED |            |
+|  3 | Saif   |  80000 | 2024-10-03 | NULL   |         NULL | NOT PROVIDED |            |
+|  4 | Danish |  90000 | 2023-04-18 | NULL   |         NULL | NOT PROVIDED |            |
+|  5 | Rohan  |  65000 | 2024-05-01 | M      |         NULL | NOT PROVIDED |            |
+|  6 | David  |  99000 | 2022-03-05 | NULL   |         NULL | NOT PROVIDED |            |
+|  7 | Monika |  45000 | 2024-01-05 | F      |         NULL | NOT PROVIDED |            |
++----+--------+--------+------------+--------+--------------+--------------+------------+
+7 rows in set (0.02 sec)
+
+******************************** UC9 *****************************
+
+UC9:-Ability to extend
+     employee_payroll table
+     to have Basic Pay,
+     Deductions, Taxable Pay,
+     Income Tax, Net Pay:--
+
+
+mysql> ALTER TABLE employee_payroll ADD basic_pay NUMERIC,ADD deductions DECIMAL, ADD taxable_pay DECIMAL , ADD income_tax DECIMAL , ADD net_pay DECIMAL;
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM employee_payroll;
++----+--------+--------+------------+--------+--------------+--------------+------------+-----------+------------+-------------+------------+---------+
+| id | name   | salary | start_date | gender | phone_number | address      | department | basic_pay | deductions | taxable_pay | income_tax | net_pay |
++----+--------+--------+------------+--------+--------------+--------------+------------+-----------+------------+-------------+------------+---------+
+|  1 | Sam    |  50000 | 2025-02-05 | NULL   |         NULL | NOT PROVIDED |            |      NULL |       NULL |        NULL |       NULL |    NULL |
+|  2 | Irshad |  60000 | 2024-01-20 | M      |         NULL | NOT PROVIDED |            |      NULL |       NULL |        NULL |       NULL |    NULL |
+|  3 | Saif   |  80000 | 2024-10-03 | NULL   |         NULL | NOT PROVIDED |            |      NULL |       NULL |        NULL |       NULL |    NULL |
+|  4 | Danish |  90000 | 2023-04-18 | NULL   |         NULL | NOT PROVIDED |            |      NULL |       NULL |        NULL |       NULL |    NULL |
+|  5 | Rohan  |  65000 | 2024-05-01 | M      |         NULL | NOT PROVIDED |            |      NULL |       NULL |        NULL |       NULL |    NULL |
+|  6 | David  |  99000 | 2022-03-05 | NULL   |         NULL | NOT PROVIDED |            |      NULL |       NULL |        NULL |       NULL |    NULL |
+|  7 | Monika |  45000 | 2024-01-05 | F      |         NULL | NOT PROVIDED |            |      NULL |       NULL |        NULL |       NULL |    NULL |
++----+--------+--------+------------+--------+--------------+--------------+------------+-----------+------------+-------------+------------+---------+
+7 rows in set (0.00 sec)
+
+
+******************************** UC10 *****************************
+
+UC10:-Ability to make Terissa as part of
+      Sales and Marketing Department:-
+
+
+mysql> INSERT INTO employee_payroll (name,salary,start_date,gender,phone_number,address,department,basci_pay) VALUES ('Terissa',80000,'2024-01-01','F',1234567809,'Delhi','Sales',1000.00), ('Terissa',80000,'2024-10-01','F',1234567098,'Mumbai','Marketing',1000.00);
+ERROR 1054 (42S22): Unknown column 'basci_pay' in 'field list'
+mysql> INSERT INTO employee_payroll (name,salary,start_date,gender,phone_number,address,department,basic_pay) VALUES ('Terissa',80000,'2024-01-01','F',1234567809,'Delhi','Sales',1000.00), ('Terissa',80000,'2024-10-01','F',1234567098,'Mumbai','Marketing',1000.00);
+Query OK, 2 rows affected (0.04 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM employee_payroll;
++----+---------+--------+------------+--------+--------------+--------------+------------+-----------+------------+-------------+------------+---------+
+| id | name    | salary | start_date | gender | phone_number | address      | department | basic_pay | deductions | taxable_pay | income_tax | net_pay |
++----+---------+--------+------------+--------+--------------+--------------+------------+-----------+------------+-------------+------------+---------+
+|  1 | Sam     |  50000 | 2025-02-05 | NULL   |         NULL | NOT PROVIDED |            |      NULL |       NULL |        NULL |       NULL |    NULL |
+|  2 | Irshad  |  60000 | 2024-01-20 | M      |         NULL | NOT PROVIDED |            |      NULL |       NULL |        NULL |       NULL |    NULL |
+|  3 | Saif    |  80000 | 2024-10-03 | NULL   |         NULL | NOT PROVIDED |            |      NULL |       NULL |        NULL |       NULL |    NULL |
+|  4 | Danish  |  90000 | 2023-04-18 | NULL   |         NULL | NOT PROVIDED |            |      NULL |       NULL |        NULL |       NULL |    NULL |
+|  5 | Rohan   |  65000 | 2024-05-01 | M      |         NULL | NOT PROVIDED |            |      NULL |       NULL |        NULL |       NULL |    NULL |
+|  6 | David   |  99000 | 2022-03-05 | NULL   |         NULL | NOT PROVIDED |            |      NULL |       NULL |        NULL |       NULL |    NULL |
+|  7 | Monika  |  45000 | 2024-01-05 | F      |         NULL | NOT PROVIDED |            |      NULL |       NULL |        NULL |       NULL |    NULL |
+|  8 | Terissa |  80000 | 2024-01-01 | F      |   1234567809 | Delhi        | Sales      |      1000 |       NULL |        NULL |       NULL |    NULL |
+|  9 | Terissa |  80000 | 2024-10-01 | F      |   1234567098 | Mumbai       | Marketing  |      1000 |       NULL |        NULL |       NULL |    NULL |
++----+---------+--------+------------+--------+--------------+--------------+------------+-----------+------------+-------------+------------+---------+
+9 rows in set (0.00 sec)
+
+
